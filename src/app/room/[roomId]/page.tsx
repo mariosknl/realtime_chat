@@ -3,7 +3,7 @@
 import { useUsername } from "@/hooks/use-username";
 import { client } from "@/lib/client";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { format } from "date-fns";
 import { useRealtime } from "@/lib/realtime-client";
@@ -19,7 +19,7 @@ const Page = () => {
   const params = useParams();
   const roomId = params.roomId as string;
   const { username } = useUsername();
-
+  const router = useRouter();
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -51,6 +51,10 @@ const Page = () => {
     onData: ({ event }) => {
       if (event === "chat.message") {
         refetch();
+      }
+
+      if (event === "chat.destroy") {
+        router.push("/?destroyed=true");
       }
     },
   });
